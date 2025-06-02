@@ -1,26 +1,35 @@
 export async function verifyToken(token: string) {
-    const verificationResponse = await fetch(
-        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                secret: process.env.TURNSTILE_SECRET_KEY as string,
-                response: token,
-            }),
-        }
-    );
+    try {
+        const verificationResponse = await fetch(
+            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    secret: process.env.TURNSTILE_SECRET_KEY as string,
+                    response: token,
+                }),
+            }
+        );
 
-    return await verificationResponse.json();
+        if (!verificationResponse.ok) {
+            throw new Error("Failed to verify token");
+        }
+
+        return await verificationResponse.json();
+
+    } catch (error) {
+        console.log("Error: ", error);
+    }
 };
 
 export async function getToken(code: string) {
     try {
         const body = new URLSearchParams({
             "grant_type": "authorization_code",
-            "code": String(code),
+            "code": code,
             "redirect_uri": `${process.env.BASE_URL}/api/callback`,
         }).toString();
     
@@ -32,17 +41,14 @@ export async function getToken(code: string) {
             },
             body: body
         });
-    
+
         if (!token.ok) {
             throw new Error("Failed to fetch token");
     
         }
-    
+        
         return await token.json();
     } catch (error) {
         console.log("Error: ", error);
-        return { success: false };
     }
-
-
 };

@@ -2,12 +2,12 @@
 "use client"
 
 import { Turnstile } from "next-turnstile";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 
 
-export default function Verify() {
+function Verify() {
     const [token, setToken] = useState<string | null>(null);
 
     const router = useRouter();
@@ -62,4 +62,12 @@ export default function Verify() {
             </div>
         </main>
     )
-}   
+}  
+
+export default function VerifyPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Verify />
+        </Suspense>
+    )
+}

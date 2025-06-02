@@ -14,7 +14,7 @@ export async function logger(
           },
           {
             name: "✉️ユーザー情報",
-            value: `ID: \`${userInfo.id}\`\n言語: \`${userInfo.locale}\`\nMFA: \`${userInfo.mfa_enabled}\`\nVerified: \`${userInfo.verified }\``,
+            value: `ID: \`${userInfo.id}\`\n言語: \`${userInfo.locale}\`\nMFA: \`${userInfo.mfa_enabled}\``,
             inline: false
           },
         ];
@@ -42,9 +42,8 @@ export async function logger(
         if (!response.ok) {
             throw new Error("Webhook request failed");
         }
-
-        return { success: true };
-    } catch {
-        return { success: false };
+        
+    } catch (error) {
+        console.log("Error: ", error);
     }
 }

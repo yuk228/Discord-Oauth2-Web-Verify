@@ -19,7 +19,6 @@ export async function getInfo(accessToken: string): Promise<DiscordUser> {
             avatar_id: "",
             locale: "",
             mfa_enabled: false,
-            verified: false
         };
     }
 }
