@@ -1,7 +1,7 @@
 import { DiscordUser } from "../type"
 
 
-export const getInfo = async (accessToken: string): Promise<DiscordUser> => {
+export async function getInfo(accessToken: string): Promise<DiscordUser> {
     try {
         const response = await fetch(`https://discord.com/api/users/@me`, {
             method: "GET",

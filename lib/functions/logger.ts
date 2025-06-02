@@ -1,8 +1,8 @@
 import { DiscordUser } from "../type";
 
-export const logger = async ( 
+export async function logger( 
   userInfo: DiscordUser, 
-) => {
+) {
     try {
         const webhookUrl = process.env.DISCORD_WEBHOOK || "";
 
