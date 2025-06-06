@@ -1,12 +1,11 @@
-import { DiscordUser } from "../type"
-
+import { DiscordUser } from "../type";
 
 export async function getInfo(accessToken: string): Promise<DiscordUser> {
     try {
         const response = await fetch(`https://discord.com/api/users/@me`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+                Authorization: `Bearer ${accessToken}`,
             },
         });
         const userInfo = await response.json();

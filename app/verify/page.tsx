@@ -37,7 +37,6 @@ function Verify() {
     const handleVerify = async () => {
         if (!token || !csrfToken) return;
         try {
-            console.log("Sending verify request...");
             const res = await fetch("/api/verify", {
                 method: "POST",
                 credentials: "include",

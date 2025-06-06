@@ -19,36 +19,38 @@ export async function verifyToken(token: string) {
         }
 
         return await verificationResponse.json();
-
     } catch (error) {
         console.log("Error: ", error);
     }
-};
+}
 
 export async function getToken(code: string) {
     try {
         const body = new URLSearchParams({
-            "grant_type": "authorization_code",
-            "code": code,
-            "redirect_uri": `${process.env.BASE_URL}/api/callback`,
+            grant_type: "authorization_code",
+            code: code,
+            redirect_uri: `${process.env.BASE_URL}/api/callback`,
         }).toString();
-    
+
         const token = await fetch(`https://discord.com/api/v10/oauth2/token`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Authorization": "Basic " + Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString("base64")
+                Authorization:
+                    "Basic " +
+                    Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString(
+                        "base64"
+                    ),
             },
-            body: body
+            body: body,
         });
 
         if (!token.ok) {
             throw new Error("Failed to fetch token");
-    
         }
-        
+
         return await token.json();
     } catch (error) {
         console.log("Error: ", error);
     }
-};
+}
