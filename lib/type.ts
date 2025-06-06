@@ -6,3 +6,8 @@ export interface DiscordUser {
     locale: string;
     mfa_enabled: boolean;
 }
+
+export interface SessionData {
+    csrfToken?: string;
+    code?: string;
+}

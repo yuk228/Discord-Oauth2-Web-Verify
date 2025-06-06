@@ -1,40 +1,67 @@
-
-"use client"
+"use client";
 
 import { Turnstile } from "next-turnstile";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useRouter, useSearchParams } from "next/navigation";
-
+import { useRouter } from "next/navigation";
 
 function Verify() {
     const [token, setToken] = useState<string | null>(null);
+    const [csrfToken, setCsrfToken] = useState<string | null>(null);
 
     const router = useRouter();
-    const searchParams = useSearchParams();
-    
-    const code = searchParams.get("code");
+
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            try {
+                const res = await fetch("/api/csrf", {
+                    method: "GET",
+                    credentials: "include",
+                    headers: {
+                        Accept: "application/json",
+                    },
+                });
+                if (!res.ok) {
+                    throw new Error("Failed to fetch CSRF token");
+                }
+                const data = await res.json();
+                setCsrfToken(data.csrfToken);
+            } catch (error) {
+                console.error("Error fetching CSRF token:", error);
+                router.push("/error");
+            }
+        };
+        fetchCsrfToken();
+    }, [router]);
 
     const handleVerify = async () => {
-        if (!token) return;
-        if (!code) return;
-        const res = await fetch('/api/verify', {      
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                token,
-                code
-            }),
-        })
-        const result = await res.json();
-        if (result.status === 200) {
-            router.push("/success");
-        } else {
+        if (!token || !csrfToken) return;
+        try {
+            console.log("Sending verify request...");
+            const res = await fetch("/api/verify", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-Token": csrfToken,
+                },
+                body: JSON.stringify({
+                    token,
+                }),
+            });
+
+            const result = await res.json();
+
+            if (result.status === 200) {
+                router.push("/success");
+            } else {
+                router.push("/error");
+            }
+        } catch (error) {
+            console.error("Error verifying token:", error);
             router.push("/error");
         }
-    }
+    };
 
     return (
         <main className="flex min-h-screen items-center justify-center ">
@@ -51,9 +78,9 @@ function Verify() {
                             }}
                         />
                     </div>
-                    <Button 
-                        className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground" 
-                        disabled={!token}
+                    <Button
+                        className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground"
+                        disabled={!token || !csrfToken}
                         onClick={handleVerify}
                     >
                         認証する
@@ -61,13 +88,13 @@ function Verify() {
                 </div>
             </div>
         </main>
-    )
-}  
+    );
+}
 
 export default function VerifyPage() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <Verify />
         </Suspense>
-    )
+    );
 }
