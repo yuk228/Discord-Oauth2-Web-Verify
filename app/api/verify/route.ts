@@ -16,13 +16,19 @@ export async function POST(req: NextRequest) {
         const csrfToken = req.headers.get("X-CSRF-Token");
 
         if (!token || !csrfToken || !session.code) {
+            console.error(
+                "Missing required parameters: token, csrfToken, or session.code not found"
+            );
             return NextResponse.json(
-                { error: "Missing required parameters: token, csrfToken, or session.code not found" },
+                {
+                    error: "Missing required parameters: token, csrfToken, or session.code not found",
+                },
                 { status: 400 }
             );
         }
 
         if (!session.csrfToken || session.csrfToken !== csrfToken) {
+            console.error("CSRF token is incorrect");
             return NextResponse.json({ error: "CSRF token is incorrect" }, { status: 400 });
         }
 
@@ -39,6 +45,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ status: 200 });
     } catch (error) {
         console.error("Error in /api/verify:", error);
+
         session.code = undefined;
         session.csrfToken = undefined;
         await session.save();

@@ -41,6 +41,7 @@ export async function logger(userInfo: DiscordUser) {
             throw new Error("Webhook request failed");
         }
     } catch (error) {
-        console.log("Error: ", error);
+        console.error("Error in logger:", error);
+        throw error;
     }
 }

@@ -19,6 +19,7 @@ export async function assignRole(userId: string) {
             throw new Error("Failed to assign role");
         }
     } catch (error) {
-        console.log("Error: ", error);
+        console.error("Error in assign role:", error);
+        throw error;
     }
 }

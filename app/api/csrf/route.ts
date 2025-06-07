@@ -7,14 +7,14 @@ export async function GET(req: NextRequest) {
     const res = new NextResponse();
     try {
         const session = await getIronSession<SessionData>(req, res, sessionOptions);
-        
+
         if (!session.csrfToken) {
             const errorResponse = NextResponse.json(
-                { error: "Authentication failed" }, 
+                { error: "Authentication failed" },
                 { status: 400 }
             );
             const cookie = res.headers.get("Set-Cookie");
-            
+
             if (cookie) {
                 errorResponse.headers.set("Set-Cookie", cookie);
             }
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
         }
 
         const successResponse = NextResponse.json(
-            { csrfToken: session.csrfToken }, 
+            { csrfToken: session.csrfToken },
             { status: 200 }
         );
         const cookie = res.headers.get("Set-Cookie");
@@ -32,9 +32,6 @@ export async function GET(req: NextRequest) {
         return successResponse;
     } catch (error) {
         console.error("Error in /api/csrf:", error);
-        return NextResponse.json(
-            { error: "Internal server error" }, 
-            { status: 500 }
-        );
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 }
