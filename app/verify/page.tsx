@@ -56,8 +56,7 @@ function Verify() {
       } else {
         router.push("/error");
       }
-    } catch (error) {
-      console.error("Error verifying token:", error);
+    } catch {
       router.push("/error");
     }
   };

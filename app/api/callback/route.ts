@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     return createRedirectResponse("/verify", res);
   } catch (error) {
-    console.error("Error in callback:", error);
+    console.log("Error in api/callback:", error);
     return createRedirectResponse("/error", res);
   }
 }
@@ -32,7 +32,7 @@ function createRedirectResponse(path: string, res: NextResponse): NextResponse {
   const response = NextResponse.redirect(redirectUrl);
 
   const cookie = res.headers.get("Set-Cookie");
-  console.log("cookie", cookie);
+
   if (cookie) {
     response.headers.set("Set-Cookie", cookie);
   }

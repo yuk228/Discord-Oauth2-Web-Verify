@@ -11,7 +11,7 @@ export async function getInfo(accessToken: string): Promise<DiscordUser> {
     const userInfo = await res.json();
     return userInfo as DiscordUser;
   } catch (error) {
-    console.error("Error in getInfo:", error);
+    console.log("Error in getInfo:", error);
     throw error;
   }
 }

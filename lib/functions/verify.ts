@@ -20,7 +20,7 @@ export async function verifyToken(token: string) {
 
     return await verificationResponse.json();
   } catch (error) {
-    console.error("Error in verify csrf token:", error);
+    console.log("Error in verify csrf token:", error);
     throw error;
   }
 }
@@ -50,7 +50,7 @@ export async function getToken(code: string) {
 
     return await token.json();
   } catch (error) {
-    console.error("Error in get token from discord:", error);
+    console.log("Error in get token from discord:", error);
     throw error;
   }
 }
